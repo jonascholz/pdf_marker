@@ -1,0 +1,68 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace = "io.github.jonascholz.pdfreader"
+    compileSdk = 36
+    defaultConfig {
+        applicationId "io.github.jonascholz.pdfreader"
+        minSdk = 24
+        targetSdk = 36
+        // CI passes the run number so every APK installs over the previous one,
+        // and VERSION_NAME (from a v1.2.3 tag) for releases.
+        def buildNumber = System.getenv("BUILD_NUMBER") ?: "1"
+        versionCode = buildNumber.toInteger()
+        versionName = System.getenv("VERSION_NAME") ?: "0.0." + buildNumber + "-dev"
+    }
+    signingConfigs {
+        // CI signs debug APKs with a fixed key from the DEBUG_KEYSTORE_BASE64 secret so they update in place.
+        // Without it (local builds, forks) Gradle's default debug key is used.
+        debug {
+            def keystore = System.getenv("DEBUG_KEYSTORE")
+            if (keystore) {
+                storeFile file(keystore)
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+        // Release key: only in CI, from the RELEASE_KEYSTORE_* secrets. Without it the release APK is unsigned.
+        release {
+            def keystore = System.getenv("RELEASE_KEYSTORE")
+            if (keystore) {
+                storeFile file(keystore)
+                storePassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        // Development builds install next to the released app instead of clashing with it (other key).
+        debug {
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "PDF Reader (dev)"
+        }
+        release {
+            resValue "string", "app_name", "PDF Reader"
+            if (System.getenv("RELEASE_KEYSTORE")) signingConfig signingConfigs.release
+        }
+    }
+    buildFeatures {
+        resValues = true // app_name per build type
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// The viewer needs pdf.js in assets/pdfjs (copied by `npm run assets`, not committed).
+tasks.named('preBuild') {
+    doFirst {
+        if (!file('src/main/assets/pdfjs/pdf.min.mjs').exists()) {
+            throw new GradleException("app/src/main/assets/pdfjs is missing: run `npm ci && npm run assets` first")
+        }
+    }
+}

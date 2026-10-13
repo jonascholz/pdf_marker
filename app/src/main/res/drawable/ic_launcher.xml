@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A page with a yellow marker stroke. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path android:fillColor="#FF37474F" android:pathData="M24,0A24,24 0,1 1,24 48A24,24 0,1 1,24 0Z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M14,9H29L35,15V39H14Z" />
+    <path android:fillColor="#FFFFE033" android:pathData="M17,20H32V24H17Z" />
+    <path android:fillColor="#FF90A4AE" android:pathData="M17,27H32V29H17ZM17,31H28V33H17ZM17,16H26V18H17Z" />
+</vector>

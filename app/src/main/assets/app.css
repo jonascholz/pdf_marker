@@ -1,0 +1,116 @@
+:root {
+  --cut-top: 0px; --cut-right: 0px; --cut-bottom: 0px; --cut-left: 0px;
+  --mark: #ffc38a; /* pastel orange */
+}
+html, body { margin: 0; background: #3a3a3a; }
+/* No double-tap zoom: double tap toggles mark mode. Pinch zoom stays. */
+html { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+body {
+  padding: var(--cut-top) var(--cut-right) var(--cut-bottom) var(--cut-left);
+  font: 14px sans-serif;
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  margin-bottom: 6px;
+  background: #fff;
+  isolation: isolate; /* markings multiply with this page's pixels only */
+  overflow: hidden;
+}
+.page canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* Opaque rects blended once as a group: overlapping rects don't darken. */
+.marks { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; }
+.marks > div { position: absolute; background: var(--mark); border-radius: 2px; }
+
+.marking .textLayer span { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+#menu {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.4);
+}
+#menu[hidden] { display: none; }
+#menu .sheet {
+  min-width: 220px;
+  padding: 6px 0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.35);
+}
+#menu button {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  border: 0;
+  background: none;
+  color: #222;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+}
+#menu button:active { background: #eee; }
+#menu button:disabled { color: #aaa; background: none; }
+
+/* Mark mode line for browser testing; the app draws it as a native view (MainActivity.markLine). */
+#mode {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #f0a060; /* a deeper tone of --mark, visible against white pages */
+  z-index: 5;
+  pointer-events: none;
+}
+#mode[hidden] { display: none; }
+
+#msg { color: #ddd; text-align: center; padding: 40vh 24px 0; }
+#msg:empty { display: none; }
+
+/* pdf.js text layer (from pdfjs-dist/web/pdf_viewer.css, trimmed): transparent, selectable text over the canvas. */
+.textLayer {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  opacity: 1;
+  line-height: 1;
+  text-align: initial;
+  letter-spacing: normal;
+  word-spacing: normal;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 1;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+.textLayer span, .textLayer br {
+  color: transparent;
+  position: absolute;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+}
+.textLayer > :not(.markedContent),
+.textLayer .markedContent span:not(.markedContent) {
+  z-index: 1;
+  --font-height: 0;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  --scale-x: 1;
+  --rotate: 0deg;
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+.textLayer .markedContent { display: contents; }
+.textLayer ::selection { background: rgb(0 90 255 / 0.25); color: transparent; }
+.textLayer br::selection { background: transparent; }
+.textLayer[data-main-rotation="90"] { transform: rotate(90deg) translateY(-100%); }
+.textLayer[data-main-rotation="180"] { transform: rotate(180deg) translate(-100%, -100%); }
+.textLayer[data-main-rotation="270"] { transform: rotate(270deg) translateX(-100%); }

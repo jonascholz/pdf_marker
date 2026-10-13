@@ -1,0 +1,9 @@
+node_modules/
+.gradle/
+build/
+local.properties
+*.iml
+.idea/
+app/src/main/assets/pdfjs/
+*.keystore
+*.jks

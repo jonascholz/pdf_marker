@@ -1,0 +1,15 @@
+# Weekly update PRs: pdf.js (security fixes for the PDF parser matter most), CI actions, Android Gradle plugin.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
