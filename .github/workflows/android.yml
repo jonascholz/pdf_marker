@@ -29,7 +29,7 @@ jobs:
       # The committed gradle-wrapper.jar must be an official Gradle build.
       - uses: gradle/actions/wrapper-validation@v4
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
