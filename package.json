@@ -8,7 +8,7 @@
     "check": "node scripts/web-check.mjs"
   },
   "dependencies": {
-    "pdfjs-dist": "6.3.289"
+    "pdfjs-dist": "6.4.299"
   },
   "devDependencies": {
     "pdf-lib": "^1.17.1",
