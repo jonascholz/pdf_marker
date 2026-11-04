@@ -6,7 +6,7 @@ A barebones Android PDF reader with a highlighter. No ads, no accounts, no track
 - Opens PDFs from a file manager ("Open with") or, when launched from the home screen, from the system file picker.
 - Full screen: status and navigation bars hidden (swipe from an edge shows them briefly). All pages stacked at full width; pinch to zoom.
 - **Double tap** toggles mark mode (a thin orange line at the top of the screen). In mark mode, drag over text to mark it like a highlighter; drags that start off text still scroll.
-- **Triple tap** opens the menu: *Undo* reverts the last marking or reset (repeatable while the document is open); *Reset markings* removes all markings of the document (after a confirm). Tap beside the menu to close it.
+- **Triple tap** opens the menu: *Undo* reverts the last marking or reset (repeatable while the document is open); *Reset markings* removes all markings of the document (after a confirm); *Dark mode* / *Light mode* switches the page colors (remembered for all documents). Tap beside the menu to close it.
 - Markings and the reading position are saved per document, keyed by a SHA-256 of the file, so the same file keeps them wherever it is opened from.
 
 ## Install
@@ -28,7 +28,7 @@ One `Activity` (`app/src/main/java/.../MainActivity.java`, no library dependenci
 - Dependabot opens weekly update PRs for pdf.js, the CI actions and the Android Gradle plugin; CI validates the Gradle wrapper.
 
 ## Test
-`npm run check` runs `scripts/web-check.mjs`: the viewer in headless mobile Chromium with a generated PDF (render, text layer alignment, double tap, marking, reload, reading position, rotated page, menu, undo, reset). It needs a Chromium: set `CHROMIUM=/path/to/chrome`, or install Playwright's with `npx playwright-core install chromium`.
+`npm run check` runs `scripts/web-check.mjs`: the viewer in headless mobile Chromium with a generated PDF (render, text layer alignment, double tap, marking, reload, reading position, rotated page, menu, undo, reset, dark mode). It needs a Chromium: set `CHROMIUM=/path/to/chrome`, or install Playwright's with `npx playwright-core install chromium`.
 
 ## License
 MIT, see [LICENSE](LICENSE). Bundles [pdf.js](https://github.com/mozilla/pdf.js) (Apache-2.0; its license ships in the APK at `assets/pdfjs/LICENSE`).

@@ -70,6 +70,15 @@ body {
 }
 #mode[hidden] { display: none; }
 
+/* Dark mode: pages inverted (softened: white → near black, black → light gray), hues kept.
+   Markings sit inside the page, so they turn into a dark orange behind light text. Photos look inverted too. */
+.dark body { background: #000; } /* pages are #1a1a1a: the gaps stay visible */
+.dark .page { filter: invert(0.9) hue-rotate(180deg); }
+.dark #menu .sheet { background: #2c2c2c; }
+.dark #menu button { color: #e6e6e6; }
+.dark #menu button:active { background: #3a3a3a; }
+.dark #menu button:disabled { color: #777; background: none; }
+
 #msg { color: #ddd; text-align: center; padding: 40vh 24px 0; }
 #msg:empty { display: none; }
 

@@ -1,6 +1,6 @@
 // Browser check of the viewer (app/src/main/assets) in headless mobile Chromium:
 // renders a generated PDF, then double tap → mark mode, drag → marking saved, reload → marking shown,
-// reading position, rotated page, triple-tap menu, reset, undo. Needs `npm run assets` first. Usage: node scripts/web-check.mjs [screenshotDir]
+// reading position, rotated page, triple-tap menu, reset, undo, dark mode. Needs `npm run assets` first. Usage: node scripts/web-check.mjs [screenshotDir]
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
@@ -190,6 +190,25 @@ await page.click('#menu [data-action=undo]');
 check((await markCount()) === 2, 'second undo removes the last marking');
 check(await page.isDisabled('#menu [data-action=undo]'), 'undo disabled when nothing is left');
 await page.screenshot({ path: join(shots, '5-undo.png') });
+
+// Dark mode from the menu: pages inverted, remembered across reloads, switched back the same way.
+const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'));
+await page.click('#menu [data-action=theme]');
+check(!(await page.isVisible('#menu')), 'menu closes after switching to dark mode');
+check(await isDark(), 'dark mode on');
+check((await page.evaluate(() => getComputedStyle(document.querySelector('.page')).filter)).includes('invert'), 'pages inverted in dark mode');
+await page.reload();
+await page.waitForSelector('.page canvas');
+await sleep(300);
+check(await isDark(), 'dark mode remembered after reload');
+await page.evaluate(() => scrollTo(0, 0));
+await sleep(300);
+await page.screenshot({ path: join(shots, '6-dark.png') });
+await multiTap(3, 200, 400);
+check((await page.textContent('#menu [data-action=theme]')) === 'Light mode', 'menu offers light mode while dark');
+await page.screenshot({ path: join(shots, '7-dark-menu.png') });
+await page.click('#menu [data-action=theme]');
+check(!(await isDark()), 'light mode back');
 
 check(errors.length === 0, 'no page errors', errors.join(' | '));
 await browser.close();

@@ -336,7 +336,23 @@ const menuActions = {
     if (marks.length && confirm('Remove all markings in this document?')) setMarks([]);
     return false;
   },
+  theme() {
+    const dark = !document.documentElement.classList.contains('dark');
+    setDark(dark);
+    app.save(DARK_KEY, dark ? '1' : '0');
+    return false;
+  },
 };
+
+// Dark mode: one setting for all documents.
+const DARK_KEY = 'settings:dark';
+
+function setDark(dark) {
+  document.documentElement.classList.toggle('dark', dark);
+  menuEl.querySelector('[data-action=theme]').textContent = dark ? 'Light mode' : 'Dark mode';
+}
+
+setDark(app.load(DARK_KEY) === '1');
 
 function openMenu() {
   updateMenu();
